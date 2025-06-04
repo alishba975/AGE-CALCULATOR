@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator</title>
+  <style>
+    /* Reset some default styles */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background:rgb(24, 24, 23);
+      color: #333;
+      overflow: hidden;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 15px 25px rgba(8, 3, 3, 0.2);
+      text-align: center;
+      width: 320px;
+
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 25px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    label {
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 12px;
+      color: #444;
+    }
+
+    input[type="date"] {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      outline: none;
+    }
+
+    input[type="date"]:focus {
+      border-color: #111111;
+      box-shadow: 0 0 8px rgba(8, 8, 8, 0.5);
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px 0;
+      background: #0b0b0c;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 15px rgba(8, 8, 8, 0.4);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      background: #bdbdbe;
+      box-shadow: 0 12px 20px rgba(85, 99, 193, 0.6);
+    }
+
+    #result {
+      margin-top: 25px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #333;
+      min-height: 40px;
+      line-height: 1.4;
+      user-select: none;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    /* Smooth fade-in animation for result */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 400px) {
+      .container {
+        width: 90%;
+        padding: 25px 20px;
+      }
+
+      button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Age Calculator">
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" aria-required="true" aria-describedby="result" />
+    <button onclick="calculateAge()" aria-live="polite">Calculate Age</button>
+    <div id="result" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <script>
+    // Set max date to today to prevent future dates
+    document.getElementById('dob').max = new Date().toISOString().split("T")[0];
+
+    function calculateAge() {
+      const dobInput = document.getElementById('dob').value;
+      const resultDiv = document.getElementById('result');
+
+      if (!dobInput) {
+        resultDiv.textContent = "Please select your date of birth.";
+        return;
+      }
+
+      const birthDate = new Date(dobInput);
+      const today = new Date();
+
+      if (birthDate > today) {
+        resultDiv.textContent = "Date of birth cannot be in the future.";
+        return;
+      }
+
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        months--;
+        const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      resultDiv.textContent = `You are ${years} year${years !== 1 ? 's' : ''}, ${months} month${months !== 1 ? 's' : ''}, and ${days} day${days !== 1 ? 's' : ''} old.`;
+    }
+  </script>
+</body>
+</html>
